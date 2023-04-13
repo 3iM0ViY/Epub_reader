@@ -4,6 +4,12 @@ COVER_PATH = "cover.jpg"
 import tkinter as tk
 from tkinter import filedialog
 
+import ebooklib
+from ebooklib import epub
+book = epub.read_epub(BOOK_PATH)
+items = list(book.get_items_of_type(ebooklib.ITEM_DOCUMENT))
+print(items)
+
 # Colors
 BACKGROUND_COLOR = "#F9F7E8"
 PRIMARY_COLOR = "#FFCE67"
