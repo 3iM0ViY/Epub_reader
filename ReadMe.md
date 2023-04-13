@@ -22,7 +22,7 @@
 	- та активуйте його `venv\Scripts\activate`
 4. Завантажте необхіжні бібліотеки з файлу requirements.txt командою `pip install -r requirements.txt`
 5. Запустіть програму командою `python bookreader.py`
->	- заради тесту є 1.epub == Vingt mille lieues sous les mers завантажений з [Project Gutenberg](https://www.gutenberg.org/ebooks/54873)
+>	заради тесту є 1.epub == Vingt mille lieues sous les mers завантажений з [Project Gutenberg](https://www.gutenberg.org/ebooks/54873)
 
 
 ## Ліцензія
