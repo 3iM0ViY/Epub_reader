@@ -21,7 +21,7 @@
 3. Створіть віртуальне середовище командою `python -m venv venv` 
 	- та активуйте його `venv\Scripts\activate`
 4. Завантажте необхіжні бібліотеки з файлу requirements.txt командою `pip install -r requirements.txt`
-5. Запустіть програму командою 'python bookreader.py'
+5. Запустіть програму командою `python bookreader.py`
 
 
 ## Ліцензія
