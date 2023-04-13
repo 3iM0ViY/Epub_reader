@@ -26,6 +26,10 @@
 >	заради тесту є 1.epub == *Vingt mille lieues sous les mers* завантажений з [Project Gutenberg](https://www.gutenberg.org/ebooks/54873)
 
 
+### Красивеньке актуальне фото додається:
+![image](https://user-images.githubusercontent.com/65892395/231824844-b7c8fef2-744b-43e7-bfa0-c99200d29f17.png)
+
+
 ## Ліцензія
 Цей застосунок опубліковано під [ліцензією MIT](https://opensource.org/license/mit/)
 
