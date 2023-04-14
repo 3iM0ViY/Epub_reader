@@ -1,14 +1,8 @@
-BOOK_PATH = "1.epub"
-COVER_PATH = "cover.jpg"
-
 import tkinter as tk
 from tkinter import filedialog
 
 import ebooklib
 from ebooklib import epub
-book = epub.read_epub(BOOK_PATH)
-items = list(book.get_items_of_type(ebooklib.ITEM_DOCUMENT))
-print(items)
 
 # Colors
 BACKGROUND_COLOR = "#F9F7E8"
@@ -24,17 +18,26 @@ WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 300
 
 class OpenBook:
-    def __init__(self, master):
+    def __init__(self, master, book, title):
+        self.book = book
         self.master = master
-        self.master.title("Open Epub File")
+        self.master.title(title)
         self.master.configure(bg=BACKGROUND_COLOR)
         self.master.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
         self.master.resizable(0, 0)
-
+        self.get_content()
         # add widgets here
+
+    def get_content(self):
+        for item in self.book.get_items():
+            if item.get_type() == ebooklib.ITEM_DOCUMENT:
+                self.content = item.get_content()
+                print("content received")
+                # print(content)
 
 class BookReader:
     def __init__(self, master):
+        self.book = None #default variable for later
         self.master = master
         master.title(APP_TITLE)
         master.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
@@ -135,23 +138,28 @@ class BookReader:
         )
         read_button.pack(side=tk.LEFT, padx=10)
 
-
     def on_input_click(self, event):
         file_path = filedialog.askopenfilename(
             title="Choose an epub file", filetypes=[("epub files", "*.epub")]
         )
         if file_path:
+            # Set input_var to file_path
             self.input_var.set(file_path)
 
-    def open_epub(self):
-        file_path = self.input_var.get()
-        print(f"Opening file: {file_path}")
+            self.book = epub.read_epub(file_path) #t he variable with the file
+            self.book_path = file_path # its location
 
     def on_open_button_press(self):
-        root.withdraw()  # hide the main window
-        open_window = tk.Toplevel()
-        open_window.protocol("WM_DELETE_WINDOW", lambda: self.on_open_window_close(open_window))
-        OpenBook(open_window)
+        # we need the title of the window to be same as the titke of the book
+        book_title = self.book.get_metadata("DC", "title")[0][0] if self.book.get_metadata("DC", "title") else None 
+
+        if book_title:
+            root.withdraw()  # hide the main window
+            open_window = tk.Toplevel()
+            open_window.protocol("WM_DELETE_WINDOW", lambda: self.on_open_window_close(open_window))
+            OpenBook(open_window, self.book, book_title)
+        else:
+            tk.messagebox.showerror(title="Error", message="This EPUB file does not have a title.")
 
     def on_open_window_close(self, window):
         window.destroy()
