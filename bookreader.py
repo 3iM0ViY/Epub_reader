@@ -1,14 +1,8 @@
-BOOK_PATH = "1.epub"
-COVER_PATH = "cover.jpg"
-
 import tkinter as tk
 from tkinter import filedialog
 
 import ebooklib
 from ebooklib import epub
-# book = epub.read_epub(BOOK_PATH)
-# items = list(book.get_items_of_type(ebooklib.ITEM_DOCUMENT))
-# print(items)
 
 # Colors
 BACKGROUND_COLOR = "#F9F7E8"
@@ -151,20 +145,13 @@ class BookReader:
         if file_path:
             # Set input_var to file_path
             self.input_var.set(file_path)
-            print("$"*10)
-            print(self.input_var)
 
-            self.book = epub.read_epub(file_path)
-            self.book_path = file_path
-            
-            print(self.book_path, self.book, sep=" #### ")
-
-    def open_epub(self):
-        file_path = self.input_var.get()
-        print(f"Opening file: {file_path}")
+            self.book = epub.read_epub(file_path) #t he variable with the file
+            self.book_path = file_path # its location
 
     def on_open_button_press(self):
-        book_title = self.book.get_metadata("DC", "title")[0][0] if self.book.get_metadata("DC", "title") else None
+        # we need the title of the window to be same as the titke of the book
+        book_title = self.book.get_metadata("DC", "title")[0][0] if self.book.get_metadata("DC", "title") else None 
 
         if book_title:
             root.withdraw()  # hide the main window
