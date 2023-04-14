@@ -4,6 +4,12 @@ COVER_PATH = "cover.jpg"
 import tkinter as tk
 from tkinter import filedialog
 
+import ebooklib
+from ebooklib import epub
+book = epub.read_epub(BOOK_PATH)
+items = list(book.get_items_of_type(ebooklib.ITEM_DOCUMENT))
+print(items)
+
 # Colors
 BACKGROUND_COLOR = "#F9F7E8"
 PRIMARY_COLOR = "#FFCE67"
@@ -17,6 +23,15 @@ APP_TITLE = "Epub Reader"
 WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 300
 
+class OpenBook:
+    def __init__(self, master):
+        self.master = master
+        self.master.title("Open Epub File")
+        self.master.configure(bg=BACKGROUND_COLOR)
+        self.master.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
+        self.master.resizable(0, 0)
+
+        # add widgets here
 
 class BookReader:
     def __init__(self, master):
@@ -77,6 +92,7 @@ class BookReader:
             pady=5,
             relief=tk.FLAT,
             activebackground=PRIMARY_COLOR_PRESSED,
+            command=self.on_open_button_press,
         )
         open_button.pack(side=tk.LEFT, padx=10)
         like_button = tk.Button(
@@ -130,6 +146,16 @@ class BookReader:
     def open_epub(self):
         file_path = self.input_var.get()
         print(f"Opening file: {file_path}")
+
+    def on_open_button_press(self):
+        root.withdraw()  # hide the main window
+        open_window = tk.Toplevel()
+        open_window.protocol("WM_DELETE_WINDOW", lambda: self.on_open_window_close(open_window))
+        OpenBook(open_window)
+
+    def on_open_window_close(self, window):
+        window.destroy()
+        root.deiconify()  # show the main window again
 
 
 if __name__ == "__main__":
