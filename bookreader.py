@@ -6,9 +6,9 @@ from tkinter import filedialog
 
 import ebooklib
 from ebooklib import epub
-book = epub.read_epub(BOOK_PATH)
-items = list(book.get_items_of_type(ebooklib.ITEM_DOCUMENT))
-print(items)
+# book = epub.read_epub(BOOK_PATH)
+# items = list(book.get_items_of_type(ebooklib.ITEM_DOCUMENT))
+# print(items)
 
 # Colors
 BACKGROUND_COLOR = "#F9F7E8"
@@ -135,7 +135,6 @@ class BookReader:
         )
         read_button.pack(side=tk.LEFT, padx=10)
 
-
     def on_input_click(self, event):
         file_path = filedialog.askopenfilename(
             title="Choose an epub file", filetypes=[("epub files", "*.epub")]
@@ -148,10 +147,22 @@ class BookReader:
         print(f"Opening file: {file_path}")
 
     def on_open_button_press(self):
-        root.withdraw()  # hide the main window
-        open_window = tk.Toplevel()
-        open_window.protocol("WM_DELETE_WINDOW", lambda: self.on_open_window_close(open_window))
-        OpenBook(open_window)
+        def read_epub_file(file_path):
+            # open the epub file
+            book = epub.read_epub(file_path)
+            # print the book title
+            self.book_title = book.get_metadata('DC', 'title')[0][0]
+        read_epub_file(BOOK_PATH)
+        self.book_title = ""
+        print(self.book_title)
+
+        if self.book_title:
+            root.withdraw()  # hide the main window
+            open_window = tk.Toplevel()
+            open_window.protocol("WM_DELETE_WINDOW", lambda: self.on_open_window_close(open_window))
+            OpenBook(open_window)
+        else:
+            tk.messagebox.showerror(title="Error", message="This EPUB file does not have a title.")
 
     def on_open_window_close(self, window):
         window.destroy()
