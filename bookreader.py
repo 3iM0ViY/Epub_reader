@@ -24,9 +24,9 @@ WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 300
 
 class OpenBook:
-    def __init__(self, master):
+    def __init__(self, master, title):
         self.master = master
-        self.master.title("Open Epub File")
+        self.master.title(title)
         self.master.configure(bg=BACKGROUND_COLOR)
         self.master.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
         self.master.resizable(0, 0)
@@ -140,7 +140,24 @@ class BookReader:
             title="Choose an epub file", filetypes=[("epub files", "*.epub")]
         )
         if file_path:
+            # Set input_var to file_path
             self.input_var.set(file_path)
+            print("$"*10)
+            print(self.input_var)
+
+            # Read metadata from epub file
+            self.book = epub.read_epub(file_path)
+            title = self.book.get_metadata("DC", "title")[0][0] if self.book.get_metadata("DC", "title") else None
+
+            # Save the file path and title for later use
+            self.book_path = file_path
+            self.book_title = title
+            print(self.book_path, self.book_title, self.book, sep=" #### ")
+            for item in self.book.get_items():
+                if item.get_type() == ebooklib.ITEM_DOCUMENT:
+                    self.content = item.get_content()
+                    # print(content)
+
 
     def open_epub(self):
         file_path = self.input_var.get()
@@ -153,14 +170,12 @@ class BookReader:
             # print the book title
             self.book_title = book.get_metadata('DC', 'title')[0][0]
         read_epub_file(BOOK_PATH)
-        self.book_title = ""
-        print(self.book_title)
 
         if self.book_title:
             root.withdraw()  # hide the main window
             open_window = tk.Toplevel()
             open_window.protocol("WM_DELETE_WINDOW", lambda: self.on_open_window_close(open_window))
-            OpenBook(open_window)
+            OpenBook(open_window, self.book_title)
         else:
             tk.messagebox.showerror(title="Error", message="This EPUB file does not have a title.")
 
