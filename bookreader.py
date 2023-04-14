@@ -24,17 +24,26 @@ WINDOW_WIDTH = 500
 WINDOW_HEIGHT = 300
 
 class OpenBook:
-    def __init__(self, master, title):
+    def __init__(self, master, book, title):
+        self.book = book
         self.master = master
         self.master.title(title)
         self.master.configure(bg=BACKGROUND_COLOR)
         self.master.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
         self.master.resizable(0, 0)
-
+        self.get_content()
         # add widgets here
+
+    def get_content(self):
+        for item in self.book.get_items():
+            if item.get_type() == ebooklib.ITEM_DOCUMENT:
+                self.content = item.get_content()
+                print("content received")
+                # print(content)
 
 class BookReader:
     def __init__(self, master):
+        self.book = None #default variable for later
         self.master = master
         master.title(APP_TITLE)
         master.geometry(f"{WINDOW_WIDTH}x{WINDOW_HEIGHT}")
@@ -145,37 +154,23 @@ class BookReader:
             print("$"*10)
             print(self.input_var)
 
-            # Read metadata from epub file
             self.book = epub.read_epub(file_path)
-            title = self.book.get_metadata("DC", "title")[0][0] if self.book.get_metadata("DC", "title") else None
-
-            # Save the file path and title for later use
             self.book_path = file_path
-            self.book_title = title
-            print(self.book_path, self.book_title, self.book, sep=" #### ")
-            for item in self.book.get_items():
-                if item.get_type() == ebooklib.ITEM_DOCUMENT:
-                    self.content = item.get_content()
-                    # print(content)
-
+            
+            print(self.book_path, self.book, sep=" #### ")
 
     def open_epub(self):
         file_path = self.input_var.get()
         print(f"Opening file: {file_path}")
 
     def on_open_button_press(self):
-        def read_epub_file(file_path):
-            # open the epub file
-            book = epub.read_epub(file_path)
-            # print the book title
-            self.book_title = book.get_metadata('DC', 'title')[0][0]
-        read_epub_file(BOOK_PATH)
+        book_title = self.book.get_metadata("DC", "title")[0][0] if self.book.get_metadata("DC", "title") else None
 
-        if self.book_title:
+        if book_title:
             root.withdraw()  # hide the main window
             open_window = tk.Toplevel()
             open_window.protocol("WM_DELETE_WINDOW", lambda: self.on_open_window_close(open_window))
-            OpenBook(open_window, self.book_title)
+            OpenBook(open_window, self.book, book_title)
         else:
             tk.messagebox.showerror(title="Error", message="This EPUB file does not have a title.")
 
